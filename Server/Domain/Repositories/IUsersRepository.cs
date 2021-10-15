@@ -9,5 +9,6 @@ namespace Server.Domain.Repositories
         IEnumerable<User> GetAll(string name, bool? active);
         User GetById(int id);
         void Update(User user);
+        void Delete(User user);
     }
 }

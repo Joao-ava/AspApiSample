@@ -10,7 +10,8 @@ namespace Server.Domain.Handlers
     public class UserHandler :
         Notifiable<Notification>,
         IHandler<CreateUserCommand>,
-        IHandler<UpdateUserCommand>
+        IHandler<UpdateUserCommand>,
+        IHandler<DeleteUserCommand>
     {
         private readonly IUsersRepository _userRepository;
         private readonly ISexesRepository _sexRepository;
@@ -54,6 +55,16 @@ namespace Server.Domain.Handlers
             user.Active = command.Active;
             _userRepository.Update(user);
             return new GenericCommandResult(true, "Usuário atualizado", user);
+        }
+
+        public ICommandResult Handle(DeleteUserCommand command)
+        {
+            User user = _userRepository.GetById(command.Id);
+            if (user == null)
+                return new GenericCommandResult(false, "Ops, parece que não foi possivel achar o usuario!", command.Id);
+
+            _userRepository.Delete(user);
+            return new GenericCommandResult(true, "Usuario deletado", null);
         }
     }
 }

@@ -44,5 +44,15 @@ namespace Server.Api.Controllers
             input.Id = userId;
             return (GenericCommandResult) handler.Handle(input);
         }
+
+        [Route("{userId:int}")]
+        [HttpDelete]
+        public GenericCommandResult Delete(
+            int userId,
+            [FromServices]UserHandler handler
+        )
+        {
+            return (GenericCommandResult) handler.Handle(new DeleteUserCommand(userId));
+        }
     }
 }

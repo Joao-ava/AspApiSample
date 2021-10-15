@@ -41,5 +41,11 @@ namespace Server.Infra.Repositories
             _context.Update(user);
             _context.SaveChanges();
         }
+
+        public void Delete(User user)
+        {
+            _context.Remove(user);
+            _context.SaveChanges();
+        }
     }
 }

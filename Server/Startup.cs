@@ -1,15 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+
+using Server.Domain.Repositories;
+using Server.Domain.Handlers;
+using Server.Infra.Data;
+using Server.Infra.Repositories;
 
 namespace Server
 {
@@ -25,6 +25,12 @@ namespace Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddDbContext<DataContext>(options => options.UseInMemoryDatabase("Database"));
+
+            services.AddTransient<IUsersRepository, UsersRepository>();
+            services.AddTransient<ISexesRepository, SexesRepository>();
+            services.AddTransient<UserHandler, UserHandler>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

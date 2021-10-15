@@ -1,4 +1,6 @@
+using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Server.Domain.Entities;
 
 namespace Server.Infra.Data
@@ -25,7 +27,11 @@ namespace Server.Infra.Data
             // modelBuilder.Entity<Sex>().Property(x => x.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Sex>().HasKey(x => x.Id);
             modelBuilder.Entity<Sex>().Property(x => x.Description).HasMaxLength(15).HasColumnType("varchar(15)");
-            modelBuilder.Entity<Sex>().Property(x => x.CreatedAt).HasMaxLength(100).HasColumnType("datetime");
+            modelBuilder.Entity<Sex>().Property(x => x.CreatedAt).HasDefaultValue(DateTime.UtcNow);
+            modelBuilder.Entity<Sex>().Property(x => x.UpdatedAt)
+                .ValueGeneratedOnAddOrUpdate()
+                .Metadata
+                .SetAfterSaveBehavior(PropertySaveBehavior.Save);
             // user
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<User>().Property(x => x.Id);
@@ -35,6 +41,11 @@ namespace Server.Infra.Data
             modelBuilder.Entity<User>().Property(x => x.Active).HasColumnType("bit");
             modelBuilder.Entity<User>().Property(x => x.Birth).HasColumnType("datetime");
             modelBuilder.Entity<User>().HasOne(x => x.Sex).WithOne().HasForeignKey<User>(x => x.SexId);
+            modelBuilder.Entity<User>().Property(x => x.CreatedAt).HasDefaultValueSql("getdate()");
+            modelBuilder.Entity<User>().Property(x => x.UpdatedAt)
+                .ValueGeneratedOnAddOrUpdate()
+                .Metadata
+                .SetAfterSaveBehavior(PropertySaveBehavior.Save);
         }
     }
 }

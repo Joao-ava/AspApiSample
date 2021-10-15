@@ -1,6 +1,10 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+
 using Server.Domain.Commands;
+using Server.Domain.Entities;
 using Server.Domain.Handlers;
+using Server.Domain.Repositories;
 
 namespace Server.Api.Controllers
 {
@@ -16,6 +20,17 @@ namespace Server.Api.Controllers
         )
         {
             return (GenericCommandResult) handler.Handle(input);
+        }
+
+        [Route("")]
+        [HttpGet]
+        public IEnumerable<User> GetAll(
+            [FromServices]IUsersRepository repository,
+            [FromQuery]string name="",
+            [FromQuery]bool? active=null
+        )
+        {
+            return repository.GetAll(name, active);
         }
     }
 }

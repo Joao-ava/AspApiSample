@@ -9,7 +9,8 @@ namespace Server.Domain.Handlers
 {
     public class UserHandler :
         Notifiable<Notification>,
-        IHandler<CreateUserCommand>
+        IHandler<CreateUserCommand>,
+        IHandler<UpdateUserCommand>
     {
         private readonly IUsersRepository _userRepository;
         private readonly ISexesRepository _sexRepository;
@@ -32,6 +33,27 @@ namespace Server.Domain.Handlers
             User user = new User(command.Name, command.Birth, command.Email, command.SexId, command.Password);
             _userRepository.Create(user);
             return new GenericCommandResult(true, "Usuário salvo", user);
+        }
+
+        public ICommandResult Handle(UpdateUserCommand command)
+        {
+            command.Validate();
+            if (!command.IsValid)
+                return new GenericCommandResult(false, "Ops, parece que não foi possivel validar usuario!", command.Notifications);
+
+            User user = _userRepository.GetById(command.Id);
+            if (user == null)
+                return new GenericCommandResult(false, "Ops, parece que não foi possivel achar o usuario!", command.Id);
+
+            Sex sex = _sexRepository.GetById(command.SexId);
+            user.Name = command.Name;
+            user.Birth = command.Birth;
+            user.Email = command.Email;
+            user.Sex = sex;
+            user.Password = command.Password;
+            user.Active = command.Active;
+            _userRepository.Update(user);
+            return new GenericCommandResult(true, "Usuário atualizado", user);
         }
     }
 }

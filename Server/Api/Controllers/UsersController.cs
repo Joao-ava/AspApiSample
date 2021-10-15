@@ -32,5 +32,17 @@ namespace Server.Api.Controllers
         {
             return repository.GetAll(name, active);
         }
+
+        [Route("{userId:int}")]
+        [HttpPut]
+        public GenericCommandResult Update(
+            int userId,
+            [FromServices]UserHandler handler,
+            [FromBody]UpdateUserCommand input
+        )
+        {
+            input.Id = userId;
+            return (GenericCommandResult) handler.Handle(input);
+        }
     }
 }

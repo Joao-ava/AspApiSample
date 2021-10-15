@@ -10,5 +10,10 @@ namespace Server.Domain.Queries
         {
             return user => (name == "" || user.Name.Contains(name)) && (active == null || user.Active == active);
         }
+
+        public static Expression<Func<User, bool>> GetById(int id)
+        {
+            return user => user.Id == id;
+        }
     }
 }

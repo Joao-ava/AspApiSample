@@ -30,5 +30,16 @@ namespace Server.Infra.Repositories
                 .Include(x => x.Sex)
                 .Where(UserQueries.GetAll(name, active));
         }
+
+        public User GetById(int id)
+        {
+            return _context.Users.FirstOrDefault(UserQueries.GetById(id));
+        }
+
+        public void Update(User user)
+        {
+            _context.Update(user);
+            _context.SaveChanges();
+        }
     }
 }
